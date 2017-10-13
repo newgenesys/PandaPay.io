@@ -1,0 +1,278 @@
+FORMAT: 1A
+HOST: https://api.pandapay.io/v1/
+
+# PandaPay.io
+
+PandaPay is a payment processing platform designed to make charitable giving as efficient and economical as possible.
+
+## Retrieving PandaPay Card Tokens [/customers/{customer_id}/cards]
+
+### List All Credit Cards [GET]
+
++ Response 000 (application/json)
+        
+        {
+            "object": "list",
+            "url": "/v1/customers/cus_jrRy4VXcjdy2pIloNnWHcg/cards",
+            "has_more": false,
+            "data": [  
+                {  
+                    "id": "card_9XP4gkEMZEn4FAzZitKkdMbilCE",
+                    "object": "card",
+                    "created": 1507836996,
+                    "livemode": false,
+                    "customer": "cus_jrRy4VXcjdy2pIloNnWHcg",
+                    "last4": "1111"
+                }
+            ]
+        }
+
+## Creating PandaPay Card Tokens [/cards]
+
+### Create a New Card Token [POST]
+
+You may create a token for a customer credit card using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request (application/json)
+
+
++ Response 000 (application/json)
+
+# Group Customers
+
+## PandaPay Customer Objects [/customers]
+
+A Customer Object possesses the following attributes:
+
+- id - Unique id, prefixed with cus_
+- object - Set to "customer"
+- created - Timestamp when the object was created
+- livemode - "True" if a live key was used, "False" if a test key was used
+- email (required) - The email address that will receive a receipt when a customer id is passed to a new Donation object
+- default_source - The default source that will be charged when a customer id is passed to a new Donation object
+- sources - A list of payment sources belonging to the customer, which can be either Bank or Card object
+
+### Create a New Customer Object [/{u}/{email}/{source}]
+
+You may create a new customer using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request
+    
++ Parameters
+    + u - Test mode secret key
+    + email - Email address that receives receipt
+    + source - Panda.js token
+
+### List All Customers [GET]
+
++ Response 000 (application/json)
+
+## Other Customer Object Operations [/customers/{customer_id}]
+
++ Parameters
+    + customer_id (required, number) - Test mode secret key
+
+### Update a Customer Object [PUT]
+
+You may update a customer information using this action. It takes a JSON
+object containing an email of the customer.
+
++ Request (application/json)
+    
+        {
+            "email": "newemail@example.com"
+        }
+
++ Response 000 (application/json)
+
+        {
+          "id": "cus_ls41pOHb8g_E7r7isjwa7w",
+          "object": "customer",
+          "email": "newemail@example.com",
+          "livemode": false,
+          "cards":[]
+        }
+
+### Delete a Customer Object [DELETE]
+
+You may delete a customer information using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request (application/json)
+
++ Response 000 (application/json)
+
+        
+        {
+          "id": "cus_Areyuq-zoZt2HavO1jO7vg",
+          "object": "customer", 
+          "email": "customer+38@email.com", 
+          "livemode": false,
+          "cards": []
+        }
+            
+# Group Donations
+
+## PandaPay Donation Objects [/donations]
+
+A Donation Object possesses the following attributes:
+
+- id - Unique id, prefixed with ch_
+- object - Set to "donation"
+- created - Timestamp when the object was created
+- livemode - "True" if a live key was used, "False" is a test key was used
+- currency (required) - Only “usd” is available at this time
+- charge_amount - An integer representing the total amount charged to the credit card, in cents
+- destination_ein - The tax ID of the charity receiving this donation (optional)
+- donation_after_fees - An integer representing the amount of the donation after fees, in cents
+- source (required) - The funding source for this donation; either a Panda.js card token or a Customer id with a valid payment source
+- grants - A list of any Grant objects that were created with the funds from this donation
+- receipt_email (required) - The email which should receive a donation receipt
+- restricted (default: null) - Use this parameter to set the plain text name of a program or project at your destination_ein, to which you’d like to designate funds. 
+
+### Create a New Donation Object [/{u}/{amount}/{currency}/{source}/{receipt_email}/{platform_fee}/{destination_ein}]
+
+You may create a new donation using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Response 000 (application/json)
+        
+        {
+          "id": "ch_ks2QQXr9daUruVnz-n7k3Q",
+          "object": "donation",
+          "created": 1481066097,
+          "livemode": false,
+          "charge_amount": 5000,
+          "platform_fee": 100,
+          "donation_after_fees": 4675,
+          "currency": "usd",
+          "payment_token": "GfWZp9ALQ6bzWKaHdmCKlXzSghT",
+          "customer": null,
+          "grants": [],
+          "receipt_email": "test@pandapay.io",
+          "destination": "12-3456789",
+          "restriction": null
+        }
+    
++ Parameters
+    + u - Test mode secret key
+    + amount - Donation amount in cents
+    + currency
+    + source - Panda.js card token
+    + receipt_email - Email to receive receipt
+    + platform_fee - Platform fee in cents
+    + destination_ein - Recipient charity EIN
+
+### List All Donations [GET]
+
++ Response 000 (application/json)
+
+## Other Donation Object Operations [/donations/{donation_id}]
+
++ Parameters
+    + donation_id (required, number)
+
+### Update a Donation Object [PUT]
+
+You may update a donation information using this action. It takes a JSON
+object containing ......
+
++ Request (application/json)
+
++ Response 000 (application/json)
+
+### Delete a Donation Object [DELETE]
+
+You may delete a donation information using this action. It takes a JSON
+object containing ......
+
+A Grant Object is created automatically if a destination_ein is passed with a Donation Object. A source_transaction is not required, but if one is passed, the Grant Object will be added to the grants attribute on the original Donation Object.
+
++ Request (application/json)
+
++ Response 000 (application/json)
+
+### Create Grant objects with a donation and source [/grants]
+
+You may create a new grant object from with the source specified
+
++ Request (application/json)
+
++ Response 000 (appplication/json)
+
+# Group Grants
+
+## PandaPay Grant Objects without donation (from your Unallocate Donation Amount) [/grants]
+
+A Grant Object possesses the following attributes:
+
+- id - Unique id, prefixed with gr_
+- object - Set to "grant"
+- created - Timestamp when the object was created
+- livemode - "True" if a live key was used, "False" is a test key was used
+- amount (required) - An integer representing the amount of the grant in cents
+- destination_ein (required) - The tax ID of the charity receiving this grant
+- source_transaction - The donation id from which these funds were drawn, if any
+- restricted (default: null) - Use this parameter to set the plain text name of a program or project at your destination_ein, to which you’d like to designate funds. 
+
+### Create a New Grant Object with a source transaction [POST]
+
+You may create a new customer using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request
+
+        {
+          "amount" : "100",
+          "destination" : "24"
+        }
+        
++ Response 000 (application/json)
+        
+        {
+          id: "gr_9bIDXurB8PCrIqIYvlwiPQ\",
+          object: "grant",
+          created: "1499455100",
+          livemode: false,
+          amount: "100",
+          status: "pending",
+          currency: "usd",
+          type: "npo",
+          destination: "00-00000024",
+          restriction: null
+        }
+
+### List All Grants [GET]
+
++ Response 000 (application/json)
+
+## Other Grant Object Operations [/grants/{grant_id}]
+
++ Parameters
+    + grant_id (required, number)
+
+### Update a Grant Object [PUT]
+
+You may update a grant information using this action. It takes a JSON
+object containing .............
+
++ Request (application/json)
+        
++ Response 000 (application/json)
+
+
+### Delete a Grant Object [DELETE]
+
+You may delete a grant information using this action. It takes a JSON
+object containing .........
+
++ Request (application/json)
+
++ Response 000 (application/json)
