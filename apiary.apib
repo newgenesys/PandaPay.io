@@ -32,8 +32,7 @@ PandaPay is a payment processing platform designed to make charitable giving as 
 ### Create a New Card Token [POST]
 
 You may create a token for a customer credit card using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+object containing a customer id.
 
 + Request (application/json)
 
@@ -57,8 +56,7 @@ A Customer Object possesses the following attributes:
 ### Create a New Customer Object [/{u}/{email}/{source}]
 
 You may create a new customer using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+object containing an id, email address that will receive the receipt and a list of sources of payment belonging to the customer.
 
 + Request
     
